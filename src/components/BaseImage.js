@@ -8,7 +8,9 @@ const IMAGE_NUMBER = 1 + Math.round(Math.random() * 1);
 const IMAGE_URL = `image-${IMAGE_NUMBER}.jpg`;
 
 export default () => {
-  const [image] = useImage(IMAGE_URL, "Anonymous");
+  const imgURL = useStore(s => s.imageURL);
+  const url = imgURL === null ? IMAGE_URL : imgURL
+  const [image] = useImage(url, "Anonymous");
 
   const setImageSize = useStore(state => state.setImageSize);
   const setScale = useStore(state => state.setScale);

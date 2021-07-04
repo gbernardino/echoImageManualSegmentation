@@ -8,18 +8,13 @@ const [useStore] = create(set => ({
   imageWidth: 100,
   imageHeight: 100,
 
+  imageURL : null,
+  setImageURL : url => set({imageURL: url}),
+
   setImageSize: size =>
     set(() => ({ imageWidth: size.width, imageHeight: size.height })),
   scale: 1,
   setScale: scale => set({ scale }),
-  isDrawing: false,
-  toggleIsDrawing: () => set(state => ({ isDrawing: !state.isDrawing })),
-
-  regions: [],
-  setRegions: regions => set(state => ({ regions })),
-
-  selectedRigionId: null,
-  selectRegion: selectedRigionId => set({ selectedRigionId }),
 
   brightness: 0,
   setBrightness: brightness => set({ brightness }),

@@ -2,11 +2,10 @@ import React from 'react';
 import Konva from 'konva';
 import { Stage, Line, Layer } from 'react-konva';
 
-import Regions from './Regions';
 import BaseImage from './BaseImage';
 import Polyline from './Polyline'
 import useStore from '../store';
-
+import {closestNode,closestEdge } from './polylineMath'
 let id = 1;
 
 function getRelativePointerPosition(node) {
@@ -77,17 +76,11 @@ export default () => {
   }));
   const setSize = useStore((s) => s.setSize);
   const scale = useStore((state) => state.scale);
-  const isDrawing = useStore((state) => state.isDrawing);
-  const toggleDrawing = useStore((state) => state.toggleIsDrawing);
-
-  const regions = useStore((state) => state.regions);
-  const setRegions = useStore((state) => state.setRegions);
-
-  const selectRegion = useStore((s) => s.selectRegion);
 
   const polyline = useStore((s) => s.polyline);
 
   const setPolyline = useStore((s) => s.setPolyline);
+  const mode = useStore((s) => s.modeInteraction);
 
 
   React.useEffect(() => {
@@ -113,10 +106,30 @@ export default () => {
         scaleY={scale}
         className="canvas"
         onClick={(e) => {
+          console.log(mode)
           const point = getRelativePointerPosition(e.target.getStage()); 
-          const newPolyline = polyline.concat([point.x, point.y])          
-          console.log(newPolyline)
-          setPolyline(newPolyline)
+          if (mode === "add") { 
+            const newPolyline = polyline.concat([point.x, point.y])   
+            setPolyline(newPolyline)       
+          }
+          else if (mode === "remove"){
+              let i = closestNode(polyline, point.x, point.y)
+              if (i >= 0) {
+                polyline.splice(2*i, 2)
+                setPolyline(polyline)       
+              }
+          }
+          else if (mode == "split"){
+            let i = closestEdge(polyline, point.x, point.y);
+            if (i >= 0) {
+              console.log(polyline)
+              polyline.splice(2*i + 2, 0, point.x, point.y)
+              console.log(polyline)
+
+              setPolyline(polyline)       
+            }
+          }
+
         }}
         onWheel={(e) => {
           e.evt.preventDefault();

@@ -6,12 +6,17 @@
   "main": "src/index.js",
   "dependencies": {
     "array-move": "2.1.0",
+    "jsfive": "^0.2.3",
     "konva": "4.0.10",
+    "ndarray": "^1.0.19",
+    "ndarray-ops": "^1.2.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-dropzone": "^11.3.4",
     "react-konva": "17.0.2-0",
     "react-scripts": "3.0.1",
     "react-sortable-hoc": "1.10.1",
+    "save-pixels": "^2.3.4",
     "use-image": "1.0.4",
     "zustand": "1.0.7"
   },
