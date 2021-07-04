@@ -22,7 +22,14 @@ const [useStore] = create(set => ({
   selectRegion: selectedRigionId => set({ selectedRigionId }),
 
   brightness: 0,
-  setBrightness: brightness => set({ brightness })
+  setBrightness: brightness => set({ brightness }),
+
+  modeInteraction : "add",
+  setInteraction : modeInteraction => set({modeInteraction}),
+
+  polyline : [],
+  setPolyline : polyline => set({polyline})
+
 }));
 
 export default useStore;

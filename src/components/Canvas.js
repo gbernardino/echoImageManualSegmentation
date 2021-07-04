@@ -1,10 +1,10 @@
 import React from 'react';
 import Konva from 'konva';
-import { Stage } from 'react-konva';
+import { Stage, Line, Layer } from 'react-konva';
 
 import Regions from './Regions';
 import BaseImage from './BaseImage';
-
+import Polyline from './Polyline'
 import useStore from '../store';
 
 let id = 1;
@@ -85,6 +85,11 @@ export default () => {
 
   const selectRegion = useStore((s) => s.selectRegion);
 
+  const polyline = useStore((s) => s.polyline);
+
+  const setPolyline = useStore((s) => s.setPolyline);
+
+
   React.useEffect(() => {
     function checkSize() {
       const container = document.querySelector('.right-panel');
@@ -97,6 +102,7 @@ export default () => {
     window.addEventListener('resize', checkSize);
     return () => window.removeEventListener('resize', checkSize);
   }, []);
+
   return (
     <React.Fragment>
       <Stage
@@ -107,10 +113,10 @@ export default () => {
         scaleY={scale}
         className="canvas"
         onClick={(e) => {
-          const clickedNotOnRegion = e.target.name() !== 'region';
-          if (clickedNotOnRegion) {
-            selectRegion(null);
-          }
+          const point = getRelativePointerPosition(e.target.getStage()); 
+          const newPolyline = polyline.concat([point.x, point.y])          
+          console.log(newPolyline)
+          setPolyline(newPolyline)
         }}
         onWheel={(e) => {
           e.evt.preventDefault();
@@ -125,40 +131,9 @@ export default () => {
           });
           stageRef.current.position(pos);
         }}
-        onMouseDown={(e) => {
-          toggleDrawing(true);
-          const point = getRelativePointerPosition(e.target.getStage());
-          const region = {
-            id: id++,
-            color: Konva.Util.getRandomColor(),
-            points: [point],
-          };
-          setRegions(regions.concat([region]));
-        }}
-        onMouseMove={(e) => {
-          if (!isDrawing) {
-            return;
-          }
-          const lastRegion = { ...regions[regions.length - 1] };
-          const point = getRelativePointerPosition(e.target.getStage());
-          lastRegion.points = lastRegion.points.concat([point]);
-          regions.splice(regions.length - 1, 1);
-          setRegions(regions.concat([lastRegion]));
-        }}
-        onMouseUp={(e) => {
-          if (!isDrawing) {
-            return;
-          }
-          const lastRegion = regions[regions.length - 1];
-          if (lastRegion.points.length < 3) {
-            regions.splice(regions.length - 1, 1);
-            setRegions(regions.concat());
-          }
-          toggleDrawing();
-        }}
       >
         <BaseImage />
-        <Regions />
+        <Polyline />
       </Stage>
       <div className="zoom-container">
         <button
