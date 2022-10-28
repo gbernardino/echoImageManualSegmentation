@@ -5,21 +5,7 @@ import { Stage, Line, Layer } from 'react-konva';
 import BaseImage from './BaseImage';
 import Polyline from './Polyline'
 import useStore from '../store';
-import {closestNode,closestEdge } from './polylineMath'
-let id = 1;
 
-function getRelativePointerPosition(node) {
-  // the function will return pointer position relative to the passed node
-  const transform = node.getAbsoluteTransform().copy();
-  // to detect relative position we need to invert transform
-  transform.invert();
-
-  // get pointer (say mouse or touch) position
-  const pos = node.getStage().getPointerPosition();
-
-  // now we find relative point
-  return transform.point(pos);
-}
 
 function zoomStage(stage, scaleBy) {
   const oldScale = stage.scaleX();
@@ -28,6 +14,7 @@ function zoomStage(stage, scaleBy) {
     x: stage.width() / 2,
     y: stage.height() / 2,
   };
+
   const mousePointTo = {
     x: pos.x / oldScale - stage.x() / oldScale,
     y: pos.y / oldScale - stage.y() / oldScale,
@@ -77,12 +64,6 @@ export default () => {
   const setSize = useStore((s) => s.setSize);
   const scale = useStore((state) => state.scale);
 
-  const polyline = useStore((s) => s.polyline);
-
-  const setPolyline = useStore((s) => s.setPolyline);
-  const mode = useStore((s) => s.modeInteraction);
-
-
   React.useEffect(() => {
     function checkSize() {
       const container = document.querySelector('.right-panel');
@@ -105,32 +86,8 @@ export default () => {
         scaleX={scale}
         scaleY={scale}
         className="canvas"
-        onClick={(e) => {
-          console.log(mode)
-          const point = getRelativePointerPosition(e.target.getStage()); 
-          if (mode === "add") { 
-            const newPolyline = polyline.concat([point.x, point.y])   
-            setPolyline(newPolyline)       
-          }
-          else if (mode === "remove"){
-              let i = closestNode(polyline, point.x, point.y)
-              if (i >= 0) {
-                polyline.splice(2*i, 2)
-                setPolyline(polyline)       
-              }
-          }
-          else if (mode == "split"){
-            let i = closestEdge(polyline, point.x, point.y);
-            if (i >= 0) {
-              console.log(polyline)
-              polyline.splice(2*i + 2, 0, point.x, point.y)
-              console.log(polyline)
-
-              setPolyline(polyline)       
-            }
-          }
-
-        }}
+        draggable={true}
+        
         onWheel={(e) => {
           e.evt.preventDefault();
           const stage = stageRef.current;
@@ -147,6 +104,7 @@ export default () => {
       >
         <BaseImage />
         <Polyline />
+
       </Stage>
       <div className="zoom-container">
         <button

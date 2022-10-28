@@ -14,6 +14,7 @@ class PolylineMath {
         /*this.coordinates[2*this.nPoints] = x
         this.coordinates[2*this.nPoints + 1] = y
         */
+       console.log('Adding', x, y)
        this.coordinates.push(x)
        this.coordinates.push(y)
        this.nPoints += 1
@@ -41,6 +42,11 @@ class PolylineMath {
         this.nPoints -= 1
     }
 
+    removeAllPoints(){
+        while (this.nPoints > 0) {
+            this.deletePoint(0);
+        }
+    }
     movePoint(x, y, i) {
         this.coordinates[2*i] = x
         this.coordinates[2*i + 1] = y
@@ -87,7 +93,7 @@ function getNodes(polyline, setPolyline){
     let arr = []
     for (let i = 0; i < N; i++) {
         arr.push(
-              <Circle name={"Node_"+i} x={polyline[2*i]} y={polyline[2*i+1]} radius={10} fill="red"  draggable
+              <Circle name={"Node_"+i} x={polyline[2*i]} y={polyline[2*i+1]} radius={2} fill="red"  draggable
               onDragEnd={
                 e=>{
                     polyline[2*i] = e.target.x();
@@ -110,6 +116,8 @@ function getNodes(polyline, setPolyline){
 
 export default () => {
   const polyline = useStore(s => s.polyline);
+  const scale = useStore(s => s.scale);
+
   const setPolyline = useStore(s => s.setPolyline);
 
   const layerRef = React.useRef(null);
@@ -117,7 +125,7 @@ export default () => {
 
   return (
     <Layer ref={layerRef}>
-        <Line  name="polyline" points={polyline} strokeWidth={3} stroke="black" />
+        <Line  name="polyline" points={polyline} strokeWidth={1} stroke="purple" />
         {
             getNodes(polyline, setPolyline)
         }
