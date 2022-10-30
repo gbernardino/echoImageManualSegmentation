@@ -1,5 +1,6 @@
 {
   "name": "image-annotation-tool-react-and-konva",
+  "homepage": " https://gbernardino.github.io/echoImageManualSegmentation/",
   "version": "1.0.0",
   "description": "",
   "keywords": [],
@@ -14,6 +15,7 @@
     "dcmjs": "^0.29.0",
     "dicom-parser": "^1.8.19",
     "dwv": "^0.30.8",
+    "gh-pages": "^4.0.0",
     "hammerjs": "^2.0.8",
     "jsfive": "^0.2.3",
     "konva": "4.0.10",
@@ -34,6 +36,8 @@
     "typescript": "3.3.3"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build", 
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
