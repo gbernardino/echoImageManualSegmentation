@@ -31,8 +31,21 @@ input {
 }
 
 .left-panel {
+  height: 100vh;
   width: 200px;
   padding: 10px;
+  overflow: scroll;
+
+}
+
+.button {
+  padding: 5px 5px;
+  align: center;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  width: 100%;
 }
 
 .regions-list {
@@ -50,16 +63,22 @@ input {
 }
 
 .right-panel {
+  height: 100vh;
   width: calc(100vw - 250px);
   margin: 10px;
   position: relative;
+  overflow: scroll;
+
 }
 
 .canvas {
   box-shadow: 0 0 5px grey;
+  overflow: scroll;
+  
 }
 
 .zoom-container {
+  flex: 1;
   position: absolute;
   top: 0;
   left: 0;

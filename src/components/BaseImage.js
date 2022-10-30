@@ -4,7 +4,6 @@ import useImage from "use-image";
 
 
 import useStore from "../store";
-import {closestNode,closestEdge } from './polylineMath'
 
 function getRelativePointerPosition(node) {
   // the function will return pointer position relative to the passed node
@@ -62,37 +61,8 @@ export default () => {
   }, [brightness]);
 
   return (
-    <Layer ref={layerRef}>
-      <Image image={image}         onClick={(e) => {
-          console.log("x: " + e.clientX + " y: " + e.clientY)
-          console.log(e)
-
-          console.log(mode)
-          const point = getRelativePointerPosition(e.target.getStage()); 
-          if (mode === "add") { 
-              console.log(point.x, point.y)
-            const newPolyline = polyline.concat([point.x, point.y])   
-            setPolyline(newPolyline)       
-          }
-          else if (mode === "remove"){
-              let i = closestNode(polyline, point.x, point.y)
-              if (i >= 0) {
-                polyline.splice(2*i, 2)
-                setPolyline(polyline)       
-              }
-          }
-          else if (mode == "split"){
-            let i = closestEdge(polyline, point.x, point.y);
-            if (i >= 0) {
-              console.log(polyline)
-              polyline.splice(2*i + 2, 0, point.x, point.y)
-              console.log(polyline)
-
-              setPolyline(polyline)       
-            }
-          }
-
-        }} />
+    <Layer ref={layerRef}  >
+      <Image image={image} />
 
     </Layer>
   );

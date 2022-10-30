@@ -1,20 +1,37 @@
 import React from 'react';
-import Konva from 'konva';
-import { Stage, Line, Layer } from 'react-konva';
+import { Stage } from 'react-konva';
 
 import BaseImage from './BaseImage';
 import Polyline from './Polyline'
 import useStore from '../store';
+import {closestNode,closestEdge } from './polylineMath'
 
+function getRelativePointerPosition(node) {
+  // the function will return pointer position relative to the passed node
+  const transform = node.getAbsoluteTransform().copy();
+  // to detect relative position we need to invert transform
+  transform.invert();
 
-function zoomStage(stage, scaleBy) {
+  // get pointer (say mouse or touch) position
+  const pos = node.getStage().getPointerPosition();
+
+  // now we find relative point
+  return transform.point(pos);
+}
+
+function zoomStage(stage, scaleBy, point = null) {
   const oldScale = stage.scaleX();
-
-  const pos = {
+  let pos ={
     x: stage.width() / 2,
     y: stage.height() / 2,
   };
+  if (point != null) {
+     pos.x = point.x
+     pos.y = point.y
+  }
+  else{
 
+  }
   const mousePointTo = {
     x: pos.x / oldScale - stage.x() / oldScale,
     y: pos.y / oldScale - stage.y() / oldScale,
@@ -64,6 +81,12 @@ export default () => {
   const setSize = useStore((s) => s.setSize);
   const scale = useStore((state) => state.scale);
 
+  const polyline = useStore((s) => s.polyline);
+
+  const setPolyline = useStore((s) => s.setPolyline);
+  const mode = useStore((s) => s.modeInteraction);
+
+
   React.useEffect(() => {
     function checkSize() {
       const container = document.querySelector('.right-panel');
@@ -87,24 +110,35 @@ export default () => {
         scaleY={scale}
         className="canvas"
         draggable={true}
-        
-        onWheel={(e) => {
-          e.evt.preventDefault();
-          const stage = stageRef.current;
+        onClick={(e) => {
+          const point = getRelativePointerPosition(e.target.getStage()); 
 
-          const dx = -e.evt.deltaX;
-          const dy = -e.evt.deltaY;
-          const pos = limitAttributes(stage, {
-            x: stage.x() + dx,
-            y: stage.y() + dy,
-            scale: stage.scaleX(),
-          });
-          stageRef.current.position(pos);
+          if (mode === "add") { 
+            const newPolyline = polyline.concat([point.x, point.y])   
+            setPolyline(newPolyline)       
+          }
+          else if (mode === "remove"){
+              let i = closestNode(polyline, point.x, point.y)
+              if (i >= 0) {
+                polyline.splice(2*i, 2)
+                setPolyline(polyline)       
+              }
+          }
+          else if (mode === "split"){
+            let i = closestEdge(polyline, point.x, point.y);
+            if (i >= 0) {
+              console.log(polyline)
+              polyline.splice(2*i + 2, 0, point.x, point.y)
+              console.log(polyline)
+
+              setPolyline(polyline)       
+            }
+          }
+
         }}
       >
         <BaseImage />
         <Polyline />
-
       </Stage>
       <div className="zoom-container">
         <button
@@ -125,3 +159,16 @@ export default () => {
     </React.Fragment>
   );
 };
+
+
+/*
+        onWheel={ (e) => {
+          if (e.evt.ctrlKey ) {
+
+            e.evt.preventDefault();
+            let scale = 1.2
+            let factor = e.evt.deltaY > 0 ? 1/scale : scale
+            zoomStage(stageRef.current, factor)
+          }
+        }}
+*/
