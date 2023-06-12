@@ -1,6 +1,6 @@
-import create from "zustand";
+import {create} from "zustand";
 
-const [useStore] = create(set => ({
+const useStore = create(set => ({
   width: window.innerWidth,
   height: window.innerHeight,
   setSize: ({ width, height }) => set({ width, height }),
@@ -24,7 +24,6 @@ const [useStore] = create(set => ({
 
   polyline : [],
   setPolyline : polyline => set({polyline})
-
 }));
 
 export default useStore;

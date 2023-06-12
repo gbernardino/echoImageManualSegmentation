@@ -45,12 +45,15 @@ function getCSV(polyline, u){
 }
 
 export default () => {
+  console.log('meow!')
+
   const { setBrightness } = useStore();
   const { setInteraction } = useStore();
   const { setImageURL } = useStore();
   const { polyline } = useStore();
 
   const setPolyline = useStore((s) => s.setPolyline);
+
 
   // TODO: save dicom, and pixel to physical functions
   // TODO: select echo region
